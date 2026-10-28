@@ -1,0 +1,90 @@
+# ARTIKELEN VAN OMA
+# - Een regel die met # begint wordt genegeerd (opmerking).
+# - Een regel die met == begint is een CATEGORIE:   == Naam | emoji | kleur
+# - Alle regels daaronder zijn ARTIKELEN van die categorie:   Naam | emoji
+# - Een artikel met een kleur erbij (Naam | emoji | #d64541) kan meerdere keren gekozen worden, zoals geld.
+# - Gebruik in een naam geen streepje | maar andere tekens mogen wel (ook : en komma's).
+# - De volgorde hier is de volgorde in de app. Zet Geld bij voorkeur als laatste.
+# - Foto's: zet img/<naam>.jpg in de repository. De naam is de artikelnaam in kleine letters, zonder accenten, met streepjes.
+
+== Bakker | 🥖 | #f4c28a
+Brood | 🍞
+Sandwiches | 🥖
+Croissant | 🥐
+Eclairs | 🍫
+Taart | 🥧
+Cracottes | 🍘
+Gewone beschuiten | 🍘
+Ronde beschuiten | 🍘
+
+== Beleg | 🍯 | #bfe3a0
+Choco | 🍫
+Boerinneke (groen deksel) | 🫙
+Speculoospasta | 🍪
+Margarine (light) | 🧈
+
+== Koffie | ☕ | #d4b496
+Koffiepads deca | ☕
+Koffiepads normaal | ☕
+Canderel | 🍬
+
+== Drank | 🥤 | #8fc7f0
+Pepsi max | 🥤
+Magere melk | 🥛
+Bruiswater | 💧
+Plat water | 💧
+Wijn (rood-wit) | 🍷
+Bier | 🍺
+Cecemel brikjes | 🧃
+Fristi brikjes | 🧃
+
+== Koeling, Charcuterie | 🥩 | #b4b8f0
+Gerookte zalm | 🐟
+Krabsalade | 🦀
+Vleessalade | 🥗
+Kip curry | 🍛
+Kip Hawaï | 🍍
+Hesp | 🍖
+Préparé | 🥩
+Fijnkost | 🥗
+Eiersalade | 🥚
+
+== Maaltijden | 🍝 | #f3a6a6
+Lasagne | 🍝
+Macaroni Kaassaus | 🧀
+Pizza | 🍕
+
+== Kaas | 🧀 | #fbe27a
+Kaasjes van Danio | 🧀
+Hollandse kaas | 🧀
+Smeerkaas | 🧀
+
+== Fruit en groenten | 🍎 | #f2a9d1
+Salade | 🥬
+Tomaten | 🍅
+Bananen | 🍌
+Appels | 🍎
+Kiwi (geel - groen) | 🥝
+Clementines - mandarijntjes | 🍊
+
+== Allerlei | 🧴 | #9fe0d4
+Keukenrol | 🧻
+WC - papier | 🧻
+Zeep | 🧼
+Shampoo | 🧴
+Body lotion | 🧴
+Signal tandpasta | 🪥
+Airwick Pure luchtverfrisser | 🌸
+Zwitsal doekjes | 🧻
+
+== Snoepgoed | 🍬 | #d9b3f0
+Wafels | 🧇
+Assortiment koeken (bijvoorbeeld Lotus) | 🍪
+Leo - koeken | 🍫
+Mars | 🍫
+Mini - snoep (Mars, Twix, …) | 🍬
+
+== Geld | 💶 | #86d494
+10 euro | 💶 | #d64541
+20 euro | 💶 | #3b7dd8
+50 euro | 💶 | #ee8a2a
