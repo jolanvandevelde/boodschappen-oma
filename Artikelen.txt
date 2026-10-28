@@ -8,7 +8,7 @@
 # - Foto's: zet img/<naam>.jpg in de repository. De naam is de artikelnaam in kleine letters, zonder accenten, met streepjes.
 
 == Bakker | 🥖 | #f4c28a
-Brood | 🍞
+Wit Brood | 🍞
 Sandwiches | 🥖
 Croissant | 🥐
 Eclairs | 🍫
