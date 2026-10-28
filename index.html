@@ -84,7 +84,8 @@ const fam=(a,t)=>btn(a=='extra'?'go':'go',a,t,'#999','font-size:16px;padding:8px
  if(S.v=='arch'){const A=JSON.parse(ls('ar')||'[]');return`<div class="bar">${btn('go','home','← Terug','var(--r)')}<div class="title">Vorige lijsten</div></div>${A.map((p,i)=>`<div class="card"><div class="nm">${new Date(p.t).toLocaleString('nl-BE',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})}<pre>${h(p.text)}</pre></div>${btn('resend',i,'✉ Opnieuw versturen','var(--b)')}</div>`).join('')||'<p class="note">Er zijn nog geen lijsten verstuurd.</p>'}`}
  if(S.v=='extra')return`<div class="bar">${btn('go','home','← Categorieën','var(--r)')}<div class="title">Zelf toevoegen</div>${toList()}</div><p class="note">Typ de naam van het artikel en tik op toevoegen.</p><input id="x" autocomplete="off">${btn('addx',0,'Toevoegen aan boodschappenlijst','var(--b)')}
  <p class="note" style="margin-top:40px">Instellingen (alleen familie): webhook-link van Home Assistant</p><input id="ha" value="${h(ls('ha')||'')}" placeholder="https://hooks.nabu.casa/…">${btn('saveha',0,'Opslaan','#777')}`}
-function render(){document.getElementById('app').innerHTML=view();window.scrollTo(0,0)}
+let lv='',lc=-1;
+function render(){const y=window.scrollY,same=S.v==lv&&S.cat==lc;document.getElementById('app').innerHTML=view();window.scrollTo(0,same?y:0);lv=S.v;lc=S.cat}
 function build(){let t=hasO()?'📞 '+omaT().toUpperCase()+' (STAAT NIET OP HET LIJSTJE)\n\n':'';
  for(const i of [...C.keys()].sort((x,y)=>C[y].it.some(q=>q.col)-C[x].it.some(q=>q.col))){const L=C[i].it.filter(x=>S.sel[x.id]);if(L.length)t+=C[i].n.toUpperCase()+'\n'+L.map(x=>'- '+x.n+(x.col?' × '+S.sel[x.id]:'')).join('\n')+'\n\n'}
  if(S.extra.length)t+='EXTRA\n'+S.extra.map(x=>'- '+x).join('\n')+'\n';
