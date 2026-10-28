@@ -14,22 +14,22 @@ body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-i
 #app{max-width:1100px;margin:0 auto;padding:16px}
 button{font:inherit;touch-action:manipulation;cursor:pointer;border:0;border-radius:18px;color:#fff;padding:16px 20px}
 .bar{display:flex;gap:12px;margin-bottom:16px;position:sticky;top:0;background:#fff;z-index:4;padding:8px 0}.bar>*{flex:none}.bar .title{flex:1}
-.title{background:#555;color:#fff;border-radius:18px;padding:18px;text-align:center;font-size:32px;display:flex;align-items:center;justify-content:center}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.tile{position:relative;min-height:150px;color:#111;border:6px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:28px}
-.tile.on{border-color:var(--g)}.tile .ic{font-size:60px}
+.title{background:#555;color:#fff;border-radius:18px;padding:14px;text-align:center;font-size:32px;display:flex;align-items:center;justify-content:center}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;grid-auto-rows:minmax(100px,min(190px,calc((100vh - 170px)/3)))}
+.tile{position:relative;min-height:0;color:#111;border:6px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:26px;line-height:1.1}
+.tile.on{border-color:var(--g)}.tile .ic{font-size:50px}
 .badge{position:absolute;top:8px;right:8px;background:var(--g);color:#fff;border-radius:99px;min-width:46px;height:46px;line-height:46px;font-size:26px}
 .row{display:flex;gap:14px;margin-top:16px}.row button{flex:1;font-size:30px;padding:24px}
 .small{display:flex;gap:12px;margin-top:20px;justify-content:center}.small button{background:#999;font-size:20px;padding:10px 16px}
-.card{display:flex;align-items:center;gap:16px;border:6px solid #d0d0d0;border-radius:18px;margin-bottom:14px;padding:12px 16px;cursor:pointer;touch-action:manipulation}
+.card{overflow:hidden;display:flex;align-items:center;gap:16px;border:6px solid #d0d0d0;border-radius:18px;margin-bottom:14px;padding:12px 16px;cursor:pointer;touch-action:manipulation}
 .card.on{border-color:var(--g);background:var(--gl)}
-.pic{width:130px;height:110px;flex:none;display:flex;align-items:center;justify-content:center;font-size:76px}
+.pic{width:110px;height:100px;flex:none;display:flex;align-items:center;justify-content:center;font-size:76px}
 .pic img{max-width:100%;max-height:110px;display:none;object-fit:contain}
-.nm{flex:1;font-size:30px}
-.pill{flex:none;min-width:230px;text-align:center;padding:18px 20px;border-radius:14px;background:var(--g);color:#fff;font-size:26px}
+.nm{flex:1;min-width:0;overflow-wrap:anywhere;font-size:28px}
+.pill{flex:none;width:260px;text-align:center;padding:14px 12px;border-radius:14px;background:var(--g);color:#fff;font-size:24px;line-height:1.2;overflow-wrap:anywhere}
 .card.on .pill{background:#fff;color:var(--g);border:4px solid var(--g)}
-.bil{width:130px;height:70px;border-radius:8px;color:#fff;font-size:40px;display:flex;align-items:center;justify-content:center;border:3px solid rgba(0,0,0,.25)}
-.cnt{display:flex;align-items:center;gap:12px;font-size:38px}.cnt button{width:84px;font-size:44px;padding:8px}
+.bil{width:110px;height:70px;border-radius:8px;color:#fff;font-size:40px;display:flex;align-items:center;justify-content:center;border:3px solid rgba(0,0,0,.25)}
+.cnt{display:flex;align-items:center;gap:12px;font-size:38px}.cnt button{width:76px;font-size:44px;padding:8px}
 .big{text-align:center;padding-top:20px}.big .pic{width:auto;height:200px;font-size:150px;margin:0 auto}.big .pic img{max-height:200px}
 .big h1{font-size:56px;margin:10px 0 24px}
 .two{display:flex;gap:16px}.two button{flex:1;min-height:150px;font-size:34px}
@@ -37,8 +37,10 @@ button{font:inherit;touch-action:manipulation;cursor:pointer;border:0;border-rad
 input{width:100%;font:inherit;padding:16px;border:3px solid #123;border-radius:12px;margin:8px 0 12px}
 pre{white-space:pre-wrap;font:400 20px/1.3 inherit;background:#f3f3f3;padding:12px;border-radius:12px}
 .lay{display:flex;gap:16px;align-items:flex-start}.main{flex:1;min-width:0}
-.side{width:290px;flex:none;position:sticky;top:12px;display:flex;flex-direction:column;gap:14px}.side button{font-size:28px;padding:24px 14px;min-height:110px}
-@media(max-width:760px){.lay{display:block}.side{position:fixed;left:0;right:0;bottom:0;width:auto;flex-direction:row;background:#fff;padding:8px 10px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 12px rgba(0,0,0,.25);z-index:5}.side button{flex:1;min-height:80px;font-size:20px;padding:10px}#app{padding-bottom:130px}.grid{grid-template-columns:repeat(2,1fr)}.card{flex-wrap:wrap}.pill{min-width:0;width:100%}}
+.side{width:260px;flex:none;position:sticky;top:12px;display:flex;flex-direction:column;gap:14px}.side button{font-size:28px;padding:24px 14px;min-height:110px}
+@media(orientation:portrait){.grid{grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(100px,min(200px,calc((100vh - 170px)/4)))}}
+@media(max-width:1000px){.lay{display:block}.side{position:fixed;left:0;right:0;bottom:0;width:auto;flex-direction:row;background:#fff;padding:8px 10px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 12px rgba(0,0,0,.25);z-index:5}.side button{flex:1;min-height:80px;font-size:20px;padding:10px}#app{padding-bottom:130px}.card{flex-wrap:wrap}.pill{width:100%}}
+@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
 </style></head><body><div id="app"></div>
 <script>
 const KEY='21f3ac6a-643b-4131-9be4-2ba11c166ac5';
@@ -62,11 +64,10 @@ function card(it){const n=S.sel[it.id]||0;
  return`<div class="card ${n?'on':''}" data-a="tog" data-v="${it.id}">${pic(it)}<div class="nm">${it.n}</div><div class="pill">${n?'✓ Op de lijst':'Toevoegen aan boodschappenlijst'}</div></div>`}
 const toList=()=>btn('go','list',`📋 Naar lijst (${total()})`,'var(--b)','font-size:24px');
 function view(){
-const ob=hasO()?btn('oma',0,'✓ Gemeld: we bellen je','var(--g)'):btn('oma',0,'❓ Ik wil nog iets anders','var(--p)');
- if(S.v=='home')return`<div class="lay"><div class="main"><div class="title" style="margin-bottom:14px">Wat heb je nodig?</div><div class="grid">${C.map((c,i)=>`<button class="tile ${cc(i)?'on':''}" data-a="cat" data-v="${i}" style="background:${c.c}">${cc(i)?`<span class="badge">${cc(i)}</span>`:''}<span class="ic">${c.e}</span>${c.n}</button>`).join('')}</div>
- <div class="small">${btn('go','extra','➕ Zelf toevoegen (familie)','#999')}${btn('go','arch','🗂 Vorige lijsten','#999')}</div></div>
- <div class="side">${btn('read',0,'🔊 Voorlezen','var(--o)','color:#111')}${ob}${btn('go','list',`📋 Naar boodschappenlijst (${total()})`,'var(--b)')}</div></div>`;
- if(S.v=='cat'){const c=C[S.cat],g=S.omac[S.cat];return`<div class="lay"><div class="main"><div class="title" style="background:${c.c};color:#111;margin-bottom:14px">${c.e} ${c.n}</div>${c.it.map(card).join('')}${btn('omc',0,g?'✓ Gemeld: oma wil nog iets bij '+c.n:'❓ Oma wil nog iets bij '+c.n+' dat er niet bij staat',g?'var(--g)':'var(--p)','width:100%;font-size:28px;padding:26px')}</div><div class="side">${btn('go','home','← Categorieën','var(--r)')}${btn('go','list',`📋 Naar lijst (${total()})`,'var(--b)')}</div></div>`}
+const fam=(a,t)=>btn(a=='extra'?'go':'go',a,t,'#999','font-size:16px;padding:8px 10px;line-height:1.2');
+ if(S.v=='home')return`<div class="bar"><div class="title" style="flex:1">Wat heb je nodig?</div>${btn('read',0,'🔊 Voorlezen','var(--o)','color:#111;font-size:28px')}${fam('extra','➕<br>Zelf toevoegen')}${fam('arch','🗂<br>Vorige lijsten')}</div>
+ <div class="grid">${C.map((c,i)=>`<button class="tile ${cc(i)?'on':''}" data-a="cat" data-v="${i}" style="background:${c.c}">${cc(i)?`<span class="badge">${cc(i)}</span>`:''}<span class="ic">${c.e}</span>${c.n}</button>`).join('')}<button class="tile" data-a="go" data-v="list" style="background:var(--b);color:#fff">${total()?`<span class="badge" style="background:#fff;color:var(--b)">${total()}</span>`:''}<span class="ic">📋</span>Naar boodschappenlijst</button></div>`;
+ if(S.v=='cat'){const c=C[S.cat],g=S.omac[S.cat];return`<div class="lay"><div class="main"><div class="title" style="background:${c.c};color:#111;margin-bottom:14px">${c.e} ${c.n}</div>${c.it.map(card).join('')}</div><div class="side">${btn('go','home','← Categorieën','var(--r)')}${btn('omc',0,g?'✓ Ik wil nog iets anders':'❓ Ik wil nog iets anders',g?'var(--g)':'var(--p)')}${btn('go','list',`📋 Naar lijst (${total()})`,'var(--b)')}</div></div>`}
  if(S.v=='rintro')return`<div class="bar">${btn('go','home','← Terug','var(--b)')}<div class="title">Voorlezen</div></div><p class="note" style="font-size:30px">De app leest alle artikelen voor, één voor één. Kies bij elk artikel: rood of groen.</p>${btn('rstart',0,'▶ Start','var(--p)','width:100%;font-size:44px;padding:40px')}`;
  if(S.v=='read'){const r=R[S.rd],it=r.it,n=S.sel[it.id]||0;return`<div class="bar">${btn('rstop',0,'■ Stop','#777')}<div class="title" style="background:${C[r.ci].c};color:#111;font-size:26px">${C[r.ci].n} · ${S.rd+1} van ${R.length}</div></div>
  <div class="big">${pic(it)}<h1>${it.n}${it.col&&n?` (${n}× gekozen)`:''}</h1></div>
@@ -124,5 +125,6 @@ document.addEventListener('pointercancel',()=>{dn=null});
 document.addEventListener('pointerup',e=>{if(!dn)return;const m=Math.hypot(e.clientX-dn[0],e.clientY-dn[1]);dn=null;if(m>14)return;const el=e.target.closest('[data-a]');if(el)act(el.dataset.a,el.dataset.v)});
 document.addEventListener('contextmenu',e=>e.preventDefault());
 try{speechSynthesis.getVoices()}catch(e){}
+document.addEventListener('visibilitychange',()=>{if(document.hidden){try{speechSynthesis.cancel()}catch(e){}}else if(C.length&&S.v!='sending'){S.v='home';render()}});
 fetch('artikelen.txt?v='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{C=parse(t);if(!C.length)throw 0;const ids=new Set();C.forEach((c,ci)=>c.it.forEach((it,k)=>{ids.add(it.id);R.push({it,ci,first:!k})}));for(const k in S.sel)if(!ids.has(k))delete S.sel[k];for(const k in S.omac)if(!C[k])delete S.omac[k];render()}).catch(()=>{document.getElementById('app').innerHTML='<p class="note" style="font-size:30px">De lijst met artikelen (artikelen.txt) kon niet geladen worden. Controleer het internet en ververs de pagina.</p>'});
 </script></body></html>
