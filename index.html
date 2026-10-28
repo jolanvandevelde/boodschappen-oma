@@ -53,7 +53,7 @@ const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.s
 try{Object.assign(S,JSON.parse(ls('bo')||'{}'))}catch(e){}S.v='home';
 const sv=()=>ls('bo',JSON.stringify({sel:S.sel,oma:S.oma,omac:S.omac,extra:S.extra}));
 const hasO=()=>S.oma||Object.keys(S.omac).length>0;
-const omaT=()=>{const k=Object.keys(S.omac).map(i=>C[i].n).join(', ');return 'Oma wil nog iets, bel haar op'+(k?' (bij: '+k+')':'')};
+const omaT=()=>{const k=Object.keys(S.omac).map(i=>C[i].n).join(', ');return 'Oma wil nog iets dat niet op het lijstje staat'+(k?' (bij: '+k+')':'')};
 const total=()=>Object.values(S.sel).reduce((a,b)=>a+b,0)+S.extra.length+(hasO()?1:0);
 const cc=i=>C[i].it.reduce((a,x)=>a+(S.sel[x.id]?1:0),0)+(S.omac[i]?1:0);
 const pic=it=>it.col?`<div class="bil" style="background:${it.col}">${it.n.split(' ')[0]}</div>`:`<div class="pic"><span>${it.e}</span><img src="img/${it.id}.jpg" alt="" onerror="if(!this.dataset.t){this.dataset.t=1;this.src=this.src.replace('.jpg','.png')}" onload="this.style.display='block';this.previousSibling.style.display='none'"></div>`;
@@ -86,11 +86,11 @@ const fam=(a,t)=>btn(a=='extra'?'go':'go',a,t,'#999','font-size:16px;padding:8px
  <p class="note" style="margin-top:40px">Instellingen (alleen familie): webhook-link van Home Assistant</p><input id="ha" value="${h(ls('ha')||'')}" placeholder="https://hooks.nabu.casa/…">${btn('saveha',0,'Opslaan','#777')}`}
 let lv='',lc=-1;
 function render(){const y=window.scrollY,same=S.v==lv&&S.cat==lc;document.getElementById('app').innerHTML=view();window.scrollTo(0,same?y:0);lv=S.v;lc=S.cat}
-function build(){let t=hasO()?'📞 '+omaT().toUpperCase()+' (STAAT NIET OP HET LIJSTJE)\n\n':'';
+function build(){let t=hasO()?omaT()+'. Bel haar even op.\n\n':'';
  for(const i of [...C.keys()].sort((x,y)=>C[y].it.some(q=>q.col)-C[x].it.some(q=>q.col))){const L=C[i].it.filter(x=>S.sel[x.id]);if(L.length)t+=C[i].n.toUpperCase()+'\n'+L.map(x=>'- '+x.n+(x.col?' × '+S.sel[x.id]:'')).join('\n')+'\n\n'}
  if(S.extra.length)t+='EXTRA\n'+S.extra.map(x=>'- '+x).join('\n')+'\n';
  const d=new Date().toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long'});
- return{t:Date.now(),text:t.trim(),oma:hasO(),subject:`Boodschappenlijst oma, ${d}${hasO()?' – OMA WIL NOG IETS':''}`,count:total()}}
+ return{t:Date.now(),text:t.trim(),oma:hasO(),subject:`Boodschappenlijst oma, ${d}`,count:total()}}
 async function send(p,fresh){S.v='sending';render();let mail=false,ha=false;
  try{const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:KEY,subject:p.subject,from_name:'Boodschappen oma',message:p.text})});const j=await r.json();mail=r.ok&&j.success}catch(e){}
  const hook=ls('ha');if(hook){try{await fetch(hook,{method:'POST',mode:'no-cors',body:new URLSearchParams({subject:p.subject,text:p.text,oma:p.oma?'1':'0'})});ha=true}catch(e){}}
