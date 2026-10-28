@@ -42,22 +42,9 @@ pre{white-space:pre-wrap;font:400 20px/1.3 inherit;background:#f3f3f3;padding:12
 </style></head><body><div id="app"></div>
 <script>
 const KEY='21f3ac6a-643b-4131-9be4-2ba11c166ac5';
-// Artikelen: Naam:emoji (bij geld ook :kleur). Foto's: zet img/<naam-met-streepjes>.jpg in de repository.
-const D=[
-['Bakker','#f4c28a','🥖','Brood:🍞|Sandwiches:🥖|Croissant:🥐|Eclairs:🍫|Taart:🥧|Cracottes:🍘|Gewone beschuiten:🍘|Ronde beschuiten:🍘'],
-['Beleg','#bfe3a0','🍯','Choco:🍫|Boerinneke (groen deksel):🫙|Speculoospasta:🍪|Margarine (light):🧈'],
-['Koffie','#d4b496','☕','Koffiepads deca:☕|Koffiepads normaal:☕|Canderel:🍬'],
-['Drank','#8fc7f0','🥤','Pepsi max:🥤|Magere melk:🥛|Bruiswater:💧|Plat water:💧|Wijn (rood-wit):🍷|Bier:🍺|Cecemel brikjes:🧃|Fristi brikjes:🧃'],
-['Koeling, Charcuterie','#b4b8f0','🥩','Gerookte zalm:🐟|Krabsalade:🦀|Vleessalade:🥗|Kip curry:🍛|Kip Hawaï:🍍|Hesp:🍖|Préparé:🥩|Fijnkost:🥗|Eiersalade:🥚'],
-['Maaltijden','#f3a6a6','🍝','Lasagne:🍝|Macaroni Kaassaus:🧀|Pizza:🍕'],
-['Kaas','#fbe27a','🧀','Kaasjes van Danio:🧀|Hollandse kaas:🧀|Smeerkaas:🧀'],
-['Fruit en groenten','#f2a9d1','🍎','Salade:🥬|Tomaten:🍅|Bananen:🍌|Appels:🍎|Kiwi (geel - groen):🥝|Clementines - mandarijntjes:🍊'],
-['Allerlei','#9fe0d4','🧴','Keukenrol:🧻|WC - papier:🧻|Zeep:🧼|Shampoo:🧴|Body lotion:🧴|Signal tandpasta:🪥|Airwick Pure luchtverfrisser:🌸|Zwitsal doekjes:🧻'],
-['Snoepgoed','#d9b3f0','🍬','Wafels:🧇|Assortiment koeken (bijvoorbeeld Lotus):🍪|Leo - koeken:🍫|Mars:🍫|Mini - snoep (Mars, Twix, …):🍬'],
-['Geld','#86d494','💶','10 euro:💶:#d64541|20 euro:💶:#3b7dd8|50 euro:💶:#ee8a2a']];
 const slug=n=>n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-const C=D.map(c=>({n:c[0],c:c[1],e:c[2],it:c[3].split('|').map(s=>{const[n,e,col]=s.split(':');return{n,e,col,id:slug(n)}})}));
-const GELD=C.length-1,R=[];C.forEach((c,ci)=>c.it.forEach((it,k)=>R.push({it,ci,first:!k})));
+let C=[],R=[];
+const parse=t=>{const o=[];t.split(/\r?\n/).forEach(l=>{l=l.trim();if(!l||l[0]=='#')return;const f=l.split('|').map(x=>x.trim());if(l.startsWith('==')){o.push({n:f[0].replace(/^=+\s*/,''),e:f[1]||'📦',c:f[2]||'#dddddd',it:[]})}else if(o.length&&f[0]){o[o.length-1].it.push({n:f[0],e:f[1]||'🛒',col:f[2]||'',id:slug(f[0])})}});return o};
 const h=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const S={v:'home',cat:0,sel:{},oma:false,omac:{},extra:[],rd:0,pend:null};
 const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){return null}};
@@ -98,7 +85,7 @@ const ob=hasO()?btn('oma',0,'✓ Gemeld: we bellen je','var(--g)'):btn('oma',0,'
  <p class="note" style="margin-top:40px">Instellingen (alleen familie): webhook-link van Home Assistant</p><input id="ha" value="${h(ls('ha')||'')}" placeholder="https://hooks.nabu.casa/…">${btn('saveha',0,'Opslaan','#777')}`}
 function render(){document.getElementById('app').innerHTML=view();window.scrollTo(0,0)}
 function build(){let t=hasO()?'📞 '+omaT().toUpperCase()+' (STAAT NIET OP HET LIJSTJE)\n\n':'';
- for(const i of [GELD,...C.keys()].filter((v,k,a)=>a.indexOf(v)==k)){const L=C[i].it.filter(x=>S.sel[x.id]);if(L.length)t+=C[i].n.toUpperCase()+'\n'+L.map(x=>'- '+x.n+(x.col?' × '+S.sel[x.id]:'')).join('\n')+'\n\n'}
+ for(const i of [...C.keys()].sort((x,y)=>C[y].it.some(q=>q.col)-C[x].it.some(q=>q.col))){const L=C[i].it.filter(x=>S.sel[x.id]);if(L.length)t+=C[i].n.toUpperCase()+'\n'+L.map(x=>'- '+x.n+(x.col?' × '+S.sel[x.id]:'')).join('\n')+'\n\n'}
  if(S.extra.length)t+='EXTRA\n'+S.extra.map(x=>'- '+x).join('\n')+'\n';
  const d=new Date().toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long'});
  return{t:Date.now(),text:t.trim(),oma:hasO(),subject:`Boodschappenlijst oma, ${d}${hasO()?' – OMA WIL NOG IETS':''}`,count:total()}}
@@ -137,5 +124,5 @@ document.addEventListener('pointercancel',()=>{dn=null});
 document.addEventListener('pointerup',e=>{if(!dn)return;const m=Math.hypot(e.clientX-dn[0],e.clientY-dn[1]);dn=null;if(m>14)return;const el=e.target.closest('[data-a]');if(el)act(el.dataset.a,el.dataset.v)});
 document.addEventListener('contextmenu',e=>e.preventDefault());
 try{speechSynthesis.getVoices()}catch(e){}
-render();
+fetch('artikelen.txt?v='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{C=parse(t);if(!C.length)throw 0;const ids=new Set();C.forEach((c,ci)=>c.it.forEach((it,k)=>{ids.add(it.id);R.push({it,ci,first:!k})}));for(const k in S.sel)if(!ids.has(k))delete S.sel[k];for(const k in S.omac)if(!C[k])delete S.omac[k];render()}).catch(()=>{document.getElementById('app').innerHTML='<p class="note" style="font-size:30px">De lijst met artikelen (artikelen.txt) kon niet geladen worden. Controleer het internet en ververs de pagina.</p>'});
 </script></body></html>
