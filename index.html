@@ -13,7 +13,7 @@ html,body{margin:0;background:#fff;color:#111;font:700 26px/1.25 'Atkinson Hyper
 body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 #app{max-width:1100px;margin:0 auto;padding:16px}
 button{font:inherit;touch-action:manipulation;cursor:pointer;border:0;border-radius:18px;color:#fff;padding:16px 20px}
-.bar{display:flex;gap:12px;margin-bottom:16px}.bar>*{flex:none}.bar .title{flex:1}
+.bar{display:flex;gap:12px;margin-bottom:16px;position:sticky;top:0;background:#fff;z-index:4;padding:8px 0}.bar>*{flex:none}.bar .title{flex:1}
 .title{background:#555;color:#fff;border-radius:18px;padding:18px;text-align:center;font-size:32px;display:flex;align-items:center;justify-content:center}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .tile{position:relative;min-height:150px;color:#111;border:6px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:28px}
@@ -30,13 +30,15 @@ button{font:inherit;touch-action:manipulation;cursor:pointer;border:0;border-rad
 .card.on .pill{background:#fff;color:var(--g);border:4px solid var(--g)}
 .bil{width:130px;height:70px;border-radius:8px;color:#fff;font-size:40px;display:flex;align-items:center;justify-content:center;border:3px solid rgba(0,0,0,.25)}
 .cnt{display:flex;align-items:center;gap:12px;font-size:38px}.cnt button{width:84px;font-size:44px;padding:8px}
-.big{text-align:center;padding-top:20px}.big .pic{width:auto;height:240px;font-size:170px;margin:0 auto}.big .pic img{max-height:240px}
+.big{text-align:center;padding-top:20px}.big .pic{width:auto;height:200px;font-size:150px;margin:0 auto}.big .pic img{max-height:200px}
 .big h1{font-size:56px;margin:10px 0 24px}
 .two{display:flex;gap:16px}.two button{flex:1;min-height:150px;font-size:34px}
 .note{font-size:24px;color:#444;margin:12px 0}
 input{width:100%;font:inherit;padding:16px;border:3px solid #123;border-radius:12px;margin:8px 0 12px}
 pre{white-space:pre-wrap;font:400 20px/1.3 inherit;background:#f3f3f3;padding:12px;border-radius:12px}
-@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}.card{flex-wrap:wrap}.pill{min-width:0;width:100%}}
+.lay{display:flex;gap:16px;align-items:flex-start}.main{flex:1;min-width:0}
+.side{width:290px;flex:none;position:sticky;top:12px;display:flex;flex-direction:column;gap:14px}.side button{font-size:28px;padding:24px 14px;min-height:110px}
+@media(max-width:760px){.lay{display:block}.side{position:fixed;left:0;right:0;bottom:0;width:auto;flex-direction:row;background:#fff;padding:8px 10px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 12px rgba(0,0,0,.25);z-index:5}.side button{flex:1;min-height:80px;font-size:20px;padding:10px}#app{padding-bottom:130px}.grid{grid-template-columns:repeat(2,1fr)}.card{flex-wrap:wrap}.pill{min-width:0;width:100%}}
 </style></head><body><div id="app"></div>
 <script>
 const KEY='21f3ac6a-643b-4131-9be4-2ba11c166ac5';
@@ -51,19 +53,21 @@ const D=[
 ['Kaas','#fbe27a','🧀','Kaasjes van Danio:🧀|Hollandse kaas:🧀|Smeerkaas:🧀'],
 ['Fruit en groenten','#f2a9d1','🍎','Salade:🥬|Tomaten:🍅|Bananen:🍌|Appels:🍎|Kiwi (geel - groen):🥝|Clementines - mandarijntjes:🍊'],
 ['Allerlei','#9fe0d4','🧴','Keukenrol:🧻|WC - papier:🧻|Zeep:🧼|Shampoo:🧴|Body lotion:🧴|Signal tandpasta:🪥|Airwick Pure luchtverfrisser:🌸|Zwitsal doekjes:🧻'],
-['Snoepgoed','#d9b3f0','🍬','Wafels:🧇|Assortiment koeken (bijvoorbeeld: Lotus):🍪|Leo - koeken:🍫|Mars:🍫|Mini - snoep (Mars, Twix, …):🍬'],
+['Snoepgoed','#d9b3f0','🍬','Wafels:🧇|Assortiment koeken (bijvoorbeeld Lotus):🍪|Leo - koeken:🍫|Mars:🍫|Mini - snoep (Mars, Twix, …):🍬'],
 ['Geld','#86d494','💶','10 euro:💶:#d64541|20 euro:💶:#3b7dd8|50 euro:💶:#ee8a2a']];
 const slug=n=>n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const C=D.map(c=>({n:c[0],c:c[1],e:c[2],it:c[3].split('|').map(s=>{const[n,e,col]=s.split(':');return{n,e,col,id:slug(n)}})}));
 const GELD=C.length-1,R=[];C.forEach((c,ci)=>c.it.forEach((it,k)=>R.push({it,ci,first:!k})));
 const h=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-const S={v:'home',cat:0,sel:{},oma:false,extra:[],rd:0,pend:null};
+const S={v:'home',cat:0,sel:{},oma:false,omac:{},extra:[],rd:0,pend:null};
 const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){return null}};
 try{Object.assign(S,JSON.parse(ls('bo')||'{}'))}catch(e){}S.v='home';
-const sv=()=>ls('bo',JSON.stringify({sel:S.sel,oma:S.oma,extra:S.extra}));
-const total=()=>Object.values(S.sel).reduce((a,b)=>a+b,0)+S.extra.length;
-const cc=i=>C[i].it.reduce((a,x)=>a+(S.sel[x.id]?1:0),0);
-const pic=it=>it.col?`<div class="bil" style="background:${it.col}">${it.n.split(' ')[0]}</div>`:`<div class="pic"><span>${it.e}</span><img src="img/${it.id}.jpg" alt="" onload="this.style.display='block';this.previousSibling.style.display='none'"></div>`;
+const sv=()=>ls('bo',JSON.stringify({sel:S.sel,oma:S.oma,omac:S.omac,extra:S.extra}));
+const hasO=()=>S.oma||Object.keys(S.omac).length>0;
+const omaT=()=>{const k=Object.keys(S.omac).map(i=>C[i].n).join(', ');return 'Oma wil nog iets, bel haar op'+(k?' (bij: '+k+')':'')};
+const total=()=>Object.values(S.sel).reduce((a,b)=>a+b,0)+S.extra.length+(hasO()?1:0);
+const cc=i=>C[i].it.reduce((a,x)=>a+(S.sel[x.id]?1:0),0)+(S.omac[i]?1:0);
+const pic=it=>it.col?`<div class="bil" style="background:${it.col}">${it.n.split(' ')[0]}</div>`:`<div class="pic"><span>${it.e}</span><img src="img/${it.id}.jpg" alt="" onerror="if(!this.dataset.t){this.dataset.t=1;this.src=this.src.replace('.jpg','.png')}" onload="this.style.display='block';this.previousSibling.style.display='none'"></div>`;
 const btn=(a,v,t,bg,x='')=>`<button data-a="${a}" ${v!==undefined?`data-v="${v}"`:''} style="background:${bg};${x}">${t}</button>`;
 function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='nl-BE';u.rate=.85;const v=speechSynthesis.getVoices();const f=v.find(x=>x.lang.replace('_','-')=='nl-BE')||v.find(x=>x.lang.startsWith('nl'));if(f)u.voice=f;speechSynthesis.speak(u)}catch(e){}}
 function card(it){const n=S.sel[it.id]||0;
@@ -71,21 +75,21 @@ function card(it){const n=S.sel[it.id]||0;
  return`<div class="card ${n?'on':''}" data-a="tog" data-v="${it.id}">${pic(it)}<div class="nm">${it.n}</div><div class="pill">${n?'✓ Op de lijst':'Toevoegen aan boodschappenlijst'}</div></div>`}
 const toList=()=>btn('go','list',`📋 Naar lijst (${total()})`,'var(--b)','font-size:24px');
 function view(){
- if(S.v=='home')return`<div class="bar"><div class="title">Wat heb je nodig?</div>${btn('read',0,'🔊 Voorlezen','var(--o)','color:#111;font-size:30px')}</div>
- <div class="grid">${C.map((c,i)=>`<button class="tile ${cc(i)?'on':''}" data-a="cat" data-v="${i}" style="background:${c.c}">${cc(i)?`<span class="badge">${cc(i)}</span>`:''}<span class="ic">${c.e}</span>${c.n}</button>`).join('')}</div>
- <div class="row">${S.oma?btn('oma',0,'✓ Gemeld: we bellen je','var(--g)'):btn('oma',0,'❓ Ik wil nog iets anders','var(--p)')}${btn('go','list',`📋 Naar boodschappenlijst (${total()})`,'var(--b)')}</div>
- <div class="small">${btn('go','extra','➕ Zelf toevoegen (familie)','#999')}${btn('go','arch','🗂 Vorige lijsten','#999')}</div>`;
- if(S.v=='cat'){const c=C[S.cat];return`<div class="bar">${btn('go','home','← Categorieën','var(--r)')}<div class="title" style="background:${c.c};color:#111">${c.e} ${c.n}</div>${toList()}</div>${c.it.map(card).join('')}`}
+const ob=hasO()?btn('oma',0,'✓ Gemeld: we bellen je','var(--g)'):btn('oma',0,'❓ Ik wil nog iets anders','var(--p)');
+ if(S.v=='home')return`<div class="lay"><div class="main"><div class="title" style="margin-bottom:14px">Wat heb je nodig?</div><div class="grid">${C.map((c,i)=>`<button class="tile ${cc(i)?'on':''}" data-a="cat" data-v="${i}" style="background:${c.c}">${cc(i)?`<span class="badge">${cc(i)}</span>`:''}<span class="ic">${c.e}</span>${c.n}</button>`).join('')}</div>
+ <div class="small">${btn('go','extra','➕ Zelf toevoegen (familie)','#999')}${btn('go','arch','🗂 Vorige lijsten','#999')}</div></div>
+ <div class="side">${btn('read',0,'🔊 Voorlezen','var(--o)','color:#111')}${ob}${btn('go','list',`📋 Naar boodschappenlijst (${total()})`,'var(--b)')}</div></div>`;
+ if(S.v=='cat'){const c=C[S.cat],g=S.omac[S.cat];return`<div class="lay"><div class="main"><div class="title" style="background:${c.c};color:#111;margin-bottom:14px">${c.e} ${c.n}</div>${c.it.map(card).join('')}${btn('omc',0,g?'✓ Gemeld: oma wil nog iets bij '+c.n:'❓ Oma wil nog iets bij '+c.n+' dat er niet bij staat',g?'var(--g)':'var(--p)','width:100%;font-size:28px;padding:26px')}</div><div class="side">${btn('go','home','← Categorieën','var(--r)')}${btn('go','list',`📋 Naar lijst (${total()})`,'var(--b)')}</div></div>`}
  if(S.v=='rintro')return`<div class="bar">${btn('go','home','← Terug','var(--b)')}<div class="title">Voorlezen</div></div><p class="note" style="font-size:30px">De app leest alle artikelen voor, één voor één. Kies bij elk artikel: rood of groen.</p>${btn('rstart',0,'▶ Start','var(--p)','width:100%;font-size:44px;padding:40px')}`;
  if(S.v=='read'){const r=R[S.rd],it=r.it,n=S.sel[it.id]||0;return`<div class="bar">${btn('rstop',0,'■ Stop','#777')}<div class="title" style="background:${C[r.ci].c};color:#111;font-size:26px">${C[r.ci].n} · ${S.rd+1} van ${R.length}</div></div>
  <div class="big">${pic(it)}<h1>${it.n}${it.col&&n?` (${n}× gekozen)`:''}</h1></div>
  <div class="two">${btn('rno',0,it.col?'Geen (meer)':'Ik heb dit niet nodig.','var(--r)')}${btn('ryes',0,it.col?'Toevoegen':(n?'✓ Staat al op de lijst':'Toevoegen aan boodschappenlijst'),'var(--g)')}</div>
  <div class="small">${btn('rrep',0,'🔁 Nog eens zeggen','#999')}</div>`}
  if(S.v=='list'){const rows=[];C.forEach(c=>c.it.forEach(it=>{const n=S.sel[it.id];if(n)rows.push(`<div class="card on">${pic(it)}<div class="nm">${it.n}${it.col?' × '+n:''}</div>${btn('del',it.id,'🗑 Weghalen','var(--b)')}</div>`)}));
-  if(S.oma)rows.unshift(`<div class="card on"><div class="pic">📞</div><div class="nm">Oma wil nog iets, bel haar op</div>${btn('oma',0,'🗑 Weghalen','var(--b)')}</div>`);
+  if(hasO())rows.unshift(`<div class="card on"><div class="pic">📞</div><div class="nm">${omaT()}</div>${btn('oma',0,'🗑 Weghalen','var(--b)')}</div>`);
   S.extra.forEach((x,i)=>rows.push(`<div class="card on"><div class="pic">✏️</div><div class="nm">${h(x)}</div>${btn('delx',i,'🗑 Weghalen','var(--b)')}</div>`));
-  return`<div class="bar"><div class="title" style="background:var(--b)">Boodschappenlijst</div></div>${rows.join('')||'<p class="note" style="font-size:30px">De lijst is nog leeg. Ga terug en kies wat je nodig hebt.</p>'}
-  <div class="row">${btn('go','home','← Terug naar categorieën','var(--r)')}${rows.length?btn('send',0,'✉ Boodschappenlijst verzenden','var(--b)','flex:2'):''}</div>`}
+  return`<div class="lay"><div class="main"><div class="title" style="background:var(--b);margin-bottom:14px">Boodschappenlijst</div>${rows.join('')||'<p class="note" style="font-size:30px">De lijst is nog leeg. Ga terug en kies wat je nodig hebt.</p>'}</div>
+  <div class="side">${btn('go','home','← Terug naar categorieën','var(--r)')}${rows.length?btn('send',0,'✉ Boodschappenlijst verzenden','var(--b)'):''}</div></div>`}
  if(S.v=='sending')return`<div class="big"><h1>Bezig met verzenden…</h1></div>`;
  if(S.v=='done')return`<div class="big"><div style="font-size:150px;color:var(--b)">✔</div><h1>Het boodschappenlijstje is verstuurd!</h1>${btn('go','home','Terug naar categorieën','var(--b)','font-size:34px;padding:28px 40px')}</div>`;
  if(S.v=='fail')return`<div class="big"><h1>Het versturen is niet gelukt.</h1><p class="note">Controleer of de iPad internet heeft. De lijst staat er nog.</p><div class="two">${btn('go','list','← Terug naar de lijst','var(--r)')}${btn('retry',0,'Opnieuw proberen','var(--g)')}</div></div>`;
@@ -93,16 +97,16 @@ function view(){
  if(S.v=='extra')return`<div class="bar">${btn('go','home','← Categorieën','var(--r)')}<div class="title">Zelf toevoegen</div>${toList()}</div><p class="note">Typ de naam van het artikel en tik op toevoegen.</p><input id="x" autocomplete="off">${btn('addx',0,'Toevoegen aan boodschappenlijst','var(--b)')}
  <p class="note" style="margin-top:40px">Instellingen (alleen familie): webhook-link van Home Assistant</p><input id="ha" value="${h(ls('ha')||'')}" placeholder="https://hooks.nabu.casa/…">${btn('saveha',0,'Opslaan','#777')}`}
 function render(){document.getElementById('app').innerHTML=view();window.scrollTo(0,0)}
-function build(){let t=S.oma?'📞 OMA WIL NOG IETS DAT NIET OP HET LIJSTJE STAAT. BEL HAAR OP!\n\n':'';
+function build(){let t=hasO()?'📞 '+omaT().toUpperCase()+' (STAAT NIET OP HET LIJSTJE)\n\n':'';
  for(const i of [GELD,...C.keys()].filter((v,k,a)=>a.indexOf(v)==k)){const L=C[i].it.filter(x=>S.sel[x.id]);if(L.length)t+=C[i].n.toUpperCase()+'\n'+L.map(x=>'- '+x.n+(x.col?' × '+S.sel[x.id]:'')).join('\n')+'\n\n'}
  if(S.extra.length)t+='EXTRA\n'+S.extra.map(x=>'- '+x).join('\n')+'\n';
  const d=new Date().toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long'});
- return{t:Date.now(),text:t.trim(),oma:S.oma,subject:`Boodschappenlijst oma, ${d}${S.oma?' – OMA WIL NOG IETS':''}`,count:total()}}
+ return{t:Date.now(),text:t.trim(),oma:hasO(),subject:`Boodschappenlijst oma, ${d}${hasO()?' – OMA WIL NOG IETS':''}`,count:total()}}
 async function send(p,fresh){S.v='sending';render();let mail=false,ha=false;
  try{const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:KEY,subject:p.subject,from_name:'Boodschappen oma',message:p.text})});const j=await r.json();mail=r.ok&&j.success}catch(e){}
  const hook=ls('ha');if(hook){try{await fetch(hook,{method:'POST',mode:'no-cors',body:new URLSearchParams({subject:p.subject,text:p.text,oma:p.oma?'1':'0'})});ha=true}catch(e){}}
  if(!mail&&!ha){S.pend=[p,fresh];S.v='fail';return render()}
- if(fresh){const A=JSON.parse(ls('ar')||'[]');A.unshift(p);ls('ar',JSON.stringify(A.slice(0,2)));S.sel={};S.oma=false;S.extra=[];sv()}
+ if(fresh){const A=JSON.parse(ls('ar')||'[]');A.unshift(p);ls('ar',JSON.stringify(A.slice(0,2)));S.sel={};S.oma=false;S.omac={};S.extra=[];sv()}
  S.v='done';render()}
 function step(i){S.rd=i;if(i>=R.length){speechSynthesis.cancel();S.v='list';return render()}S.v='read';render();const r=R[i];say((r.first?C[r.ci].n+'. ':'')+r.it.n)}
 function act(a,v){const id=v;
@@ -113,7 +117,8 @@ function act(a,v){const id=v;
  else if(a=='min'){if(S.sel[id]>1)S.sel[id]--;else delete S.sel[id];sv()}
  else if(a=='del'){delete S.sel[id];sv()}
  else if(a=='delx'){S.extra.splice(+v,1);sv()}
- else if(a=='oma'){S.oma=!S.oma;sv()}
+ else if(a=='oma'){if(hasO()){S.oma=false;S.omac={}}else S.oma=true;sv()}
+ else if(a=='omc'){S.omac[S.cat]?delete S.omac[S.cat]:S.omac[S.cat]=1;sv()}
  else if(a=='read')S.v='rintro';
  else if(a=='rstart')return step(0);
  else if(a=='rstop'){try{speechSynthesis.cancel()}catch(e){}S.v='home'}
