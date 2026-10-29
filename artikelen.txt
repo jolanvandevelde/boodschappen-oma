@@ -90,7 +90,7 @@ Leo - koeken | 🍫
 Mars | 🍫
 Mini - snoep (Mars, Twix, …) | 🍬
 
-== Geld | 💶 | #86d494
+== Cash geld | 💶 | #86d494
 10 euro | 💶 | #d64541
 20 euro | 💶 | #3b7dd8
 50 euro | 💶 | #ee8a2a
