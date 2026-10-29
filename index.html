@@ -60,6 +60,8 @@ const cc=i=>C[i].it.reduce((a,x)=>a+(S.sel[x.id]?1:0),0)+(S.omac[i]?1:0);
 const pic=it=>`<div class="pic">${it.col?`<div class="bil" style="background:${it.col}">${it.n.split(' ')[0]}</div>`:`<span>${it.e}</span>`}<img src="img/${it.id}.jpg" alt="" onerror="if(!this.dataset.t){this.dataset.t=1;this.src=this.src.replace('.jpg','.png')}" onload="this.style.display='block';this.previousSibling.style.display='none'"></div>`;
 const btn=(a,v,t,bg,x='')=>`<button data-a="${a}" ${v!==undefined?`data-v="${v}"`:''} style="background:${bg};${x}">${t}</button>`;
 function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='nl-BE';u.rate=.85;const v=speechSynthesis.getVoices();const f=v.find(x=>x.lang.replace('_','-')=='nl-BE')||v.find(x=>x.lang.startsWith('nl'));if(f)u.voice=f;speechSynthesis.speak(u)}catch(e){}}
+const A=new Audio(),AUD={};
+function talk(r,cat){const it=r.it,t=(cat&&r.first?C[r.ci].n+'. ':'')+it.n;try{A.pause();speechSynthesis.cancel()}catch(e){}if(AUD[it.id]){A.src='audio/'+it.id+'.mp3';A.play().catch(()=>say(t))}else say(t)}
 function card(it){const n=S.sel[it.id]||0;
  if(it.col)return`<div class="card ${n?'on':''}">${pic(it)}<div class="nm">${it.n}</div><div class="cnt">${btn('min',it.id,'−','#888')}<span>${n}×</span>${btn('plus',it.id,'+','var(--g)')}</div></div>`;
  return`<div class="card ${n?'on':''}" data-a="tog" data-v="${it.id}">${pic(it)}<div class="nm">${it.n}</div><div class="pill">${n?'✓ Op de lijst':'Toevoegen aan boodschappenlijst'}</div></div>`}
@@ -98,9 +100,9 @@ async function send(p,fresh){S.v='sending';render();let mail=false,ha=false;
  if(!mail&&!ha){S.pend=[p,fresh];S.v='fail';return render()}
  if(fresh){const A=JSON.parse(ls('ar')||'[]');A.unshift(p);ls('ar',JSON.stringify(A.slice(0,2)));S.sel={};S.oma=false;S.omac={};S.extra=[];sv()}
  S.v='done';render()}
-function step(i){S.rd=i;if(i>=R.length){speechSynthesis.cancel();S.v='list';return render()}S.v='read';render();const r=R[i];say((r.first?C[r.ci].n+'. ':'')+r.it.n)}
+function step(i){S.rd=i;if(i>=R.length){speechSynthesis.cancel();S.v='list';return render()}S.v='read';render();talk(R[i],true)}
 function act(a,v){const id=v;
- if(a=='go'){S.v=v;if(v=='home'||v=='list')try{speechSynthesis.cancel()}catch(e){}}
+ if(a=='go'){S.v=v;if(v=='home'||v=='list')try{speechSynthesis.cancel();A.pause()}catch(e){}}
  else if(a=='cat'){S.cat=+v;S.v='cat'}
  else if(a=='tog'){S.sel[id]?delete S.sel[id]:S.sel[id]=1;sv()}
  else if(a=='plus'){S.sel[id]=(S.sel[id]||0)+1;sv()}
@@ -112,8 +114,8 @@ function act(a,v){const id=v;
  else if(a=='omc'){S.omac[S.cat]?delete S.omac[S.cat]:S.omac[S.cat]=1;sv()}
  else if(a=='read')S.v='rintro';
  else if(a=='rstart')return step(0);
- else if(a=='rstop'){try{speechSynthesis.cancel()}catch(e){}S.v='home'}
- else if(a=='rrep'){const r=R[S.rd];return say(r.it.n)}
+ else if(a=='rstop'){try{speechSynthesis.cancel();A.pause()}catch(e){}S.v='home'}
+ else if(a=='rrep')return talk(R[S.rd],false)
  else if(a=='rno'){const it=R[S.rd].it;if(!it.col)delete S.sel[it.id];sv();return step(S.rd+1)}
  else if(a=='ryes'){const it=R[S.rd].it;if(it.col){S.sel[it.id]=(S.sel[it.id]||0)+1;sv();say((S.sel[it.id])+' keer '+it.n)}else{S.sel[it.id]=1;sv();return step(S.rd+1)}}
  else if(a=='send')return send(build(),true);
@@ -128,6 +130,6 @@ document.addEventListener('pointercancel',()=>{dn=null});
 document.addEventListener('pointerup',e=>{if(!dn)return;const m=Math.hypot(e.clientX-dn[0],e.clientY-dn[1]);dn=null;if(m>14)return;const el=e.target.closest('[data-a]');if(el)act(el.dataset.a,el.dataset.v)});
 document.addEventListener('contextmenu',e=>e.preventDefault());
 try{speechSynthesis.getVoices()}catch(e){}
-document.addEventListener('visibilitychange',()=>{if(document.hidden){try{speechSynthesis.cancel()}catch(e){}}else if(C.length&&S.v!='sending'){S.v='home';render()}});
-fetch('artikelen.txt?v='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{C=parse(t);if(!C.length)throw 0;const ids=new Set();C.forEach((c,ci)=>c.it.forEach((it,k)=>{ids.add(it.id);R.push({it,ci,first:!k})}));for(const k in S.sel)if(!ids.has(k))delete S.sel[k];for(const k in S.omac)if(!C[k])delete S.omac[k];render()}).catch(()=>{document.getElementById('app').innerHTML='<p class="note" style="font-size:30px">De lijst met artikelen (artikelen.txt) kon niet geladen worden. Controleer het internet en ververs de pagina.</p>'});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){try{speechSynthesis.cancel();A.pause()}catch(e){}}else if(C.length&&S.v!='sending'){S.v='home';render()}});
+fetch('artikelen.txt?v='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{C=parse(t);if(!C.length)throw 0;const ids=new Set();C.forEach((c,ci)=>c.it.forEach((it,k)=>{ids.add(it.id);R.push({it,ci,first:!k})}));for(const k in S.sel)if(!ids.has(k))delete S.sel[k];for(const k in S.omac)if(!C[k])delete S.omac[k];C.forEach(c=>c.it.forEach(it=>fetch('audio/'+it.id+'.mp3',{method:'HEAD'}).then(r=>{if(r.ok)AUD[it.id]=1}).catch(()=>{})));render()}).catch(()=>{document.getElementById('app').innerHTML='<p class="note" style="font-size:30px">De lijst met artikelen (artikelen.txt) kon niet geladen worden. Controleer het internet en ververs de pagina.</p>'});
 </script></body></html>
